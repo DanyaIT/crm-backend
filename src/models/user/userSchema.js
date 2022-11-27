@@ -9,7 +9,7 @@ const UserSchema = new Schema({
   },
   company: {
     type: String,
-    maxLength: 50,
+    maxlength: 50,
     required: true,
   },
   address: {
