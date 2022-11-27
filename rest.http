@@ -1,0 +1,23 @@
+### User sign
+
+POST http://localhost:5000/api/user
+Content-Type: application/json
+
+{
+    "name": "Danya",
+    "company": "Some company",
+    "address": "Some adress",
+    "phone": "4363645",
+    "email": "e@e4.com", 
+    "password": "secret123"
+}
+
+### User sign in router
+POST http://localhost:5000/api/user/login
+Content-Type: application/json
+
+{
+
+    "email": "e@e4.com",
+    "password": "secret123"
+}

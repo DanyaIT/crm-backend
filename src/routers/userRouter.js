@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const {insertUser, getUserByEmail} = require ('../models/user/userModel')
 const {hashPassword,comparePassword} = require('../helpers/hashPassword')
+const {createAccessJWT, crateRefreshJWT} = require('../helpers/jwtHelper')
 
 
 
@@ -43,13 +44,18 @@ router.post('/login', async (req, res)=>{
     }
 
     const user = await getUserByEmail(email)
-    console.log(user)
     const passFromDb = user && user._id ? user.password : null
+    
     if(!passFromDb) return res.json({status:'error', message:'Неправильный email или пароль'})
-
+    
     const result = await comparePassword(password,passFromDb)
-    console.log(result)
-    res.json({status:'Успешно'})
+    if(!result){
+        return res.json({status:'error', message:'Некоректный пароль'})
+    }
+    const createJWT = await createAccessJWT(user.email, `${user._id}`)
+    const refreshJWT = await crateRefreshJWT(user.email, `${user._id}`)
+
+    res.json({status:'Успешно', createJWT, refreshJWT})
 })
 
 
