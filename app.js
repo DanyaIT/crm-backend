@@ -31,10 +31,13 @@ mongoose
 //Routers
 const userRouter = require('./src/routers/userRouter')
 const ticketRouter = require('./src/routers/ticketRouter')
+const tokenRouter = require('./src/routers/tokenRouter')
+
 app.use('/api/user', userRouter)
 app.use('/api/ticket', ticketRouter)
+app.use('/api/tokens', tokenRouter)
 
-const handleError = require('./src/routers/utils/errorHandler')
+const handleError = require('./src/utils/errorHandler')
 app.use((req,res, next)=>{
     const error = new Error('Resources not found')
     error.status = 404;

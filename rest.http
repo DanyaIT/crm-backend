@@ -21,3 +21,39 @@ Content-Type: application/json
     "email": "e@e4.com",
     "password": "secret123"
 }
+
+
+### Авторизация
+GET http://localhost:5000/api/user
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVAZTcuY29tIiwiaWF0IjoxNjcwNDQwMDc4LCJleHAiOjE2NzA0NDA5Nzh9.1nH25khE4CYu8KNXk6uA2aRlRMGd85MyeNfOhwjpflA
+
+
+
+### Проверка refresh токена
+GET http://localhost:5000/api/tokens
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVAZTcuY29tIiwiaWF0IjoxNjcwNDQwMDc4LCJleHAiOjE2NzMwMzIwNzh9
+
+
+
+### Сброс пароля c помощью email
+POST http://localhost:5000/api/user/reset-password
+Content-Type: application/json
+
+{
+    "email": "e@e7.com"
+}
+
+
+### Новый пароль
+PATCH http://localhost:5000/api/user/reset-password
+Content-Type: application/json
+
+{
+    "email": "e@e7.com",
+    "pin": "997773",
+    "newPassword": "12334534"
+}
+
+### Удаление пользователя
+DELETE http://localhost:5000/api/user/logout
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVAZTQuY29tIiwiaWF0IjoxNjcyMjQ4MzgwLCJleHAiOjE2NzIyNDkyODB9.jAzaEHJjFrCSUP5GVj759dYqXGgIHfxzYWSMw3-xsUI
