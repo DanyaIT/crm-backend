@@ -1,14 +1,29 @@
 const express = require('express')
 const router = express.Router()
-const {insertUser, getUserByEmail} = require ('../models/user/userModel')
+const {insertUser, getUserByEmail,getUserById, storeUserRefreshJWT} = require ('../models/user/userModel')
 const {hashPassword,comparePassword} = require('../helpers/hashPassword')
 const {createAccessJWT, crateRefreshJWT} = require('../helpers/jwtHelper')
-
+const { userAuth } = require('../middleware/authMiddleWare')
+const {setPasswordRestPin} = require('../models/resetPin/resetPinModel')
+const {send, emailProcesser} = require('../helpers/emailHelper')
+const {getPinByEmailPin} = require('../models/resetPin/resetPinModel')
+const {updatePassword} = require('../models/user/userModel')
+const {deleteJWT} = require('../helpers/redisHelper')
 
 
 router.all('/', (req, res, next)=>{
     // res.json({message:'return from userRouter'})
     next()
+})
+
+
+//Authorization
+
+router.get('/', userAuth, async (req, res)=>{
+    const _id = req.userId
+    const userProf = await getUserById(_id)
+
+    res.json({user: userProf})
 })
 
 //Create User
@@ -25,7 +40,7 @@ router.post('/', async (req, res)=>{
              password: hashedPassword
         }
         const result = await insertUser(newUserObj)
-        console.log(result)
+
         
         res.json({message: 'New User', result})
 
@@ -58,6 +73,58 @@ router.post('/login', async (req, res)=>{
     res.json({status:'Успешно', createJWT, refreshJWT})
 })
 
+router.post('/reset-password', async (req, res)=>{
+    const {email} = req.body 
+    const user = await getUserByEmail(email)
+    
+    if (user && user._id){
+        const setPin = await setPasswordRestPin(email)
+        const result =  await emailProcesser(email, setPin.pin)
+        if(result && result.messageId){
+            return res.json({status:'success', message:'Письмо отправлено'})
+        }
+        return res.json({status:'error', message:'Невозможно послать письмо'})
+    }
+
+ res.json({status:'error'})
+})
+
+
+router.patch('/reset-password', async (req, res)=>{
+    const {email, pin, newPassword} = req.body
+    const getPin = await getPinByEmailPin(email, pin)
+
+    if (getPin._id){
+        const dateInDb = getPin.addedAt
+        const expiresDate = 1
+        let expDate = dateInDb.setDate(dateInDb.getDate(dateInDb) + expiresDate)
+        const today = new Date()
+        if(today > expDate){
+            return res.json({status:'error', massage: 'Время пин-кода истекло'})
+        }
+
+        const hashPass = await hashPassword(newPassword)
+        const user = await updatePassword(email, hashPass)
+
+        if(user._id){
+            return res.json({message:'access', message:'Пароль изменен!' })
+        }
+    }
+
+    res.json({status: 'error', message:'Не удалось установаить пароль'})
+})
+
+
+router.delete('/logout', userAuth, async (req,res)=>{
+     const {authorization} = req.headers
+     const _id = req.userId
+     deleteJWT(authorization)
+     const result = await storeUserRefreshJWT(_id, "")
+    if(result._id){
+        return res.json({status:'access', message:'Вы успешно вышли из системы'})
+    }
+    res.json({status:'access', message:'Вы успешно вышли из системы'})
+})
 
 
 module.exports = router 

@@ -16,7 +16,7 @@ const createAccessJWT = async (email, _id) => {
 
 const crateRefreshJWT = async (email, _id) => {
   try {
-    const refreshJWT = jwt.sign({email}, process.env.SECRET_KEY_ACCESS, {
+    const refreshJWT = jwt.sign({email}, process.env.SECRET_KEY_REFRESH, {
       expiresIn: "30d",
     });
     await storeUserRefreshJWT(_id, refreshJWT)
@@ -27,7 +27,27 @@ const crateRefreshJWT = async (email, _id) => {
   }
 };
 
+
+const verifyAccessJWT = (userJWT)=>{
+  try {
+    return Promise.resolve(jwt.verify(userJWT, process.env.SECRET_KEY_ACCESS))
+  } catch (error) {
+    return Promise.resolve(error)
+  }
+}
+
+const verifyRefreshJWT = (userJWT)=>{
+  try {
+    return Promise.resolve(jwt.verify(userJWT, process.env.SECRET_KEY_REFRESH))
+  } catch (error) {
+    return Promise.resolve(error)
+  }
+}
+
+
 module.exports = {
   createAccessJWT,
   crateRefreshJWT,
+  verifyAccessJWT,
+  verifyRefreshJWT
 };
