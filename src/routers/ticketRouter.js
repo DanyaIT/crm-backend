@@ -8,12 +8,13 @@ const {
   deleteTicket
 } = require("../models/ticket/ticketModel");
 const { userAuth } = require("../middleware/authMiddleWare");
+const {createNewTicketValidation,replyOnTicket} = require('../middleware/formMiddleWare')
 
 router.all("/", (req, res, next) => {
   next();
 });
 
-router.post("/", userAuth, async (req, res) => {
+router.post("/",createNewTicketValidation, userAuth, async (req, res) => {
   try {
     const { subject, sender, message } = req.body;
     const userId = req.userId;
@@ -51,7 +52,7 @@ router.get("/", userAuth, async (req, res) => {
   }
 });
 
-router.put("/:_id", userAuth, async (req, res) => {
+router.put("/:_id", replyOnTicket ,userAuth, async (req, res) => {
   try {
     const { _id } = req.params;
     const clientId = req.userId;
