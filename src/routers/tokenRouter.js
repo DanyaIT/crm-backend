@@ -11,7 +11,6 @@ router.get("/", async (req, res, next) => {
     const userProf = await getUserByEmail(decoded.email);
     if (userProf._id) {
       const dbRefreshToken = userProf.refreshJWT.token
-      res.json({ message: userProf });
       let tokenCreated = userProf.refreshJWT.addedAT;
       tokenCreated = tokenCreated.setDate(
       tokenCreated.getDate() + +process.env.TOKEN_EXP);
@@ -24,7 +23,7 @@ router.get("/", async (req, res, next) => {
       return res.json({status:'success', accessJWT})
     }
   }
-  res.status(403).json({message:'Ошибка'})
+   res.status(403).json({message:'Ошибка'})
 });
 
 module.exports = router;

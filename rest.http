@@ -25,13 +25,13 @@ Content-Type: application/json
 
 ### Авторизация
 GET http://localhost:5000/api/user
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVAZTQuY29tIiwiaWF0IjoxNjcyNDUxNDAyLCJleHAiOjE2NzI0NTIzMDJ9.lvf4aBJGAYp26jU2h1znsarhSQ4y3dWdNt4JqY2Frgc
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVAZTQuY29tIiwiaWF0IjoxNjcyOTE0MDMyLCJleHAiOjE2NzI5MTc2MzJ9.l8drHskhAnZgc0sMt2iprECkyhOoaukNo9luyzSayGM
 
 
 
 ### Проверка refresh токена
 GET http://localhost:5000/api/tokens
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVAZTQuY29tIiwiaWF0IjoxNjcyNDUxNDAyLCJleHAiOjE2NzUwNDM0MDJ9.ByYtWlnunm9BxUt1pMsCFTG-MztOWOieQeKBZ6S63v0
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVAZTQuY29tIiwiaWF0IjoxNjcyOTE0MDMyLCJleHAiOjE2NzU1MDYwMzJ9.fIewd4CcdmDAlUfopd9w7nGx042LHz4Xygnk2grE9yQ
 
 
 

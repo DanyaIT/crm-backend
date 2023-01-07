@@ -12,18 +12,21 @@ const {deleteJWT} = require('../helpers/redisHelper')
 
 
 router.all('/', (req, res, next)=>{
-    // res.json({message:'return from userRouter'})
+
     next()
 })
 
 
 //Authorization
-
 router.get('/', userAuth, async (req, res)=>{
     const _id = req.userId
     const userProf = await getUserById(_id)
-
-    res.json({user: userProf})
+    const {name, email} = userProf
+    res.json({user:{
+        _id,
+        name,
+        email
+    }})
 })
 
 //Create User
@@ -67,10 +70,10 @@ router.post('/login', async (req, res)=>{
     if(!result){
         return res.json({status:'error', message:'Некоректный пароль'})
     }
-    const createJWT = await createAccessJWT(user.email, `${user._id}`)
+    const accessJWT = await createAccessJWT(user.email, `${user._id}`)
     const refreshJWT = await crateRefreshJWT(user.email, `${user._id}`)
 
-    res.json({status:'Успешно', createJWT, refreshJWT})
+    res.json({status:'access', accessJWT, refreshJWT})
 })
 
 router.post('/reset-password', async (req, res)=>{
@@ -123,7 +126,7 @@ router.delete('/logout', userAuth, async (req,res)=>{
     if(result._id){
         return res.json({status:'access', message:'Вы успешно вышли из системы'})
     }
-    res.json({status:'access', message:'Вы успешно вышли из системы'})
+    res.json({status:'error', message:'Вы не вышли из системы'})
 })
 
 

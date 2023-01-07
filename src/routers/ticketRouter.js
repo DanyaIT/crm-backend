@@ -93,12 +93,7 @@ router.delete('/:_id', userAuth, async (req, res)=>{
     const {_id} = req.params
     const clientId = req.userId
     const result = await deleteTicket({_id, clientId})
-    console.log(_id)
-
-    console.log(clientId)
-
-    console.log(result)
-
+    
     if(result._id){
       return res.json({status: 'access', message:'Вы успешно удалали сообщение'})
     }
