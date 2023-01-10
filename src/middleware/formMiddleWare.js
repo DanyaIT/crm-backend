@@ -5,6 +5,7 @@ const createNewTicketValidation = (req, res, next)=>{
         subject: Joi.string().min(2).max(50).required(),
         sender: Joi.string().min(2).max(50).required(),
         message: Joi.string().min(2).max(1000).required(),
+        date: Joi.date().required()
     })
     const value = schema.validate(req.body)
     if(value.error){

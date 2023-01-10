@@ -2,10 +2,11 @@ const express = require("express");
 const router = express.Router();
 const {
   insertTicket,
-  getTicket,
+  getTickets,
   updateUserTicket,
   updateStatusClose,
-  deleteTicket
+  deleteTicket,
+  getSingleTicket
 } = require("../models/ticket/ticketModel");
 const { userAuth } = require("../middleware/authMiddleWare");
 const {createNewTicketValidation,replyOnTicket} = require('../middleware/formMiddleWare')
@@ -44,13 +45,25 @@ router.post("/",createNewTicketValidation, userAuth, async (req, res) => {
 router.get("/", userAuth, async (req, res) => {
   try {
     const userId = req.userId;
-    const result = await getTicket(userId);
+    const result = await getTickets(userId);
 
     return res.json({ status: "succes", result });
   } catch (error) {
     res.json({ status: "error", message: "Не удалось получить все сообщения" });
   }
 });
+
+router.get('/:_id', userAuth, async(req, res) => {
+  try {
+    const clientId = req.userId
+    const {_id} = req.params
+    const result = await getSingleTicket(_id, clientId)
+    return res.json({status:'succes', result}) 
+  } catch (error) {
+    console.log(error)
+    res.json({status:'error', message: 'Не удалось найти сообщение'})
+  }
+})
 
 router.put("/:_id", replyOnTicket ,userAuth, async (req, res) => {
   try {
@@ -60,7 +73,7 @@ router.put("/:_id", replyOnTicket ,userAuth, async (req, res) => {
     const result = await updateUserTicket({ _id, clientId, sender, message });
 
     if (result._id) {
-      res.json({ status: "succes", message: "Вы обновили разговор" });
+      res.json({ status: "succes", message: "Сообщение отправлено" });
     }
   } catch (error) {
     console.log(error)
@@ -77,7 +90,7 @@ router.patch("/close-ticket/:_id", userAuth, async (req, res) => {
     const clientId = req.userId;
     const result = await updateStatusClose({ _id, clientId });
     if (result._id) {
-      return res.json({ status: "succes", message: "Вы обновили статус" });
+      return res.json({ status: "succes", message: "Диалог закрыт" });
     }
   } catch (error) {
     console.log(error)

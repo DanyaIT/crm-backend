@@ -16,7 +16,7 @@ const userAuth = async (req, res, next) => {
   }
   deleteJWT(authorization)
 
-  return res.status(404).json({ message: "Не найден пользователь" });
+  return res.status(404).json({ message: "Пользователь не найден" });
 };
 
 module.exports = {

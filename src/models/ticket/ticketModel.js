@@ -13,7 +13,7 @@ const insertTicket = (ticketObj) => {
   });
 };
 
-const getTicket = (clientId) => {
+const getTickets = (clientId) => {
   return new Promise((resolve, reject) => {
     try {
       TicketSchema.find({ clientId })
@@ -24,6 +24,18 @@ const getTicket = (clientId) => {
     }
   });
 };
+
+const getSingleTicket = (_id, clientId) => {
+  return new Promise((resolve, reject)=>{
+    try {
+      TicketSchema.find({_id, clientId})
+        .then((data) => resolve(data))
+        .catch((error) => reject(error))
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
 
 const updateUserTicket = ({ _id, clientId,sender, message }) => {
   return new Promise((resolve, reject) => {
@@ -78,8 +90,9 @@ const deleteTicket = ({_id, clientId})=>{
 
 module.exports = {
   insertTicket,
-  getTicket,
+  getTickets,
+  getSingleTicket,
   updateUserTicket,
   updateStatusClose,
-  deleteTicket
+  deleteTicket,
 };
